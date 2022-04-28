@@ -3,17 +3,7 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { styles } from './styles';
-
-export type CardProps = {
-  id: string;
-  name: string;
-  user: string;
-  password: string;
-}
-type Props = {
-  data: CardProps;
-  onPress: () => void;
-}
+import { Props } from '../../@types/navigation'
 
 export function Card({ data, onPress }: Props) {
   const [passwordIsVisible, setPasswordIsVisible] = useState(false);

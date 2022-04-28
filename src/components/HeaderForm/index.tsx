@@ -14,7 +14,7 @@ export function HeaderForm() {
         onPress={() => navigation.goBack()}
         style={styles.button}
       >
-        <MaterialIcons name='chevron-left' size={32} color='#333C83' />
+        <MaterialIcons name='chevron-left' size={32} color='#FFF' />
       </TouchableOpacity>
 
       <Text style={styles.title}>Register</Text>
