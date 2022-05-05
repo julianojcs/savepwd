@@ -10,6 +10,8 @@ import { styles } from './styles'
 import { Button } from '../../components/Button'
 import { CardProps } from '../../@types/navigation'
 import Toast from 'react-native-toast-message'
+var CryptoJS = require('crypto-js')
+import { cryptoKey } from '../../config'
 
 export function Home() {
   const [data, setData] = useState<CardProps[]>([])
@@ -17,9 +19,26 @@ export function Home() {
   const { getItem, setItem, removeItem } = useAsyncStorage('@savepwd:passwords')
 
   async function handleFetchData() {
-    const response = await getItem()
-    const data = response ? JSON.parse(response) : []
-    setData(data)
+    try {
+      let decryptedData: CardProps[]
+      const response = await getItem()
+      if (response) {
+        const bytes = CryptoJS.AES.decrypt(response, cryptoKey)
+        decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
+      } else {
+        decryptedData = []
+      }
+      setData(decryptedData)
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error loading Data.',
+          text2: 'The Data is corrupted! Please try again.',
+          position: 'top'
+        })
+      }
+    }
   }
 
   async function handleRemove(id?: string) {

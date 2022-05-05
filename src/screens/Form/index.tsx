@@ -9,7 +9,10 @@ import { styles } from './styles'
 import { Input } from '../../components/Input'
 import { Button } from '../../components/Button'
 import { HeaderForm } from '../../components/HeaderForm'
-import { dataType } from '../../@types/navigation'
+import { CardProps } from '../../@types/navigation'
+
+import { cryptoKey } from '../../config'
+var CryptoJS = require('crypto-js')
 
 export function Form() {
   const [name, setName] = useState('')
@@ -19,21 +22,28 @@ export function Form() {
   const { getItem, setItem } = useAsyncStorage('@savepwd:passwords')
 
   async function handleSave() {
+    let decryptedData: CardProps[]
     try {
-      const id = uuid.v4()
-      const newData: dataType = {
+      if (name === '') {
+        throw new Error('Service name is required!')
+      }
+      const id = uuid.v4().toString()
+      const newData: CardProps = {
         id,
         name,
         user,
         password
       }
       const response = await getItem()
-      const previousData = response ? JSON.parse(response) : []
-      if (newData.name === '') {
-        throw new Error('Service name is required!')
+      if (response) {
+        const bytes = CryptoJS.AES.decrypt(response, cryptoKey)
+        decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
+      } else {
+        decryptedData = []
       }
-      const exists: dataType = previousData.find(
-        (data: dataType) =>
+
+      const exists: CardProps | undefined = decryptedData.find(
+        (data: CardProps) =>
           data.name.toUpperCase() === newData.name.toUpperCase()
       )
       if (!!exists) {
@@ -42,8 +52,14 @@ export function Form() {
       if (newData.user === '') {
         throw new Error('E-mail or Username is required!')
       }
-      const data = [...previousData, newData]
-      await setItem(JSON.stringify(data))
+      const data = [...decryptedData, newData]
+      await setItem(
+        // Encrypt
+        CryptoJS.AES.encrypt(
+          JSON.stringify(data),
+          'process.env.REACT_APP_CRYPTO_KEY'
+        ).toString()
+      )
       Toast.show({
         type: 'success',
         text1: 'Successfully registered!',

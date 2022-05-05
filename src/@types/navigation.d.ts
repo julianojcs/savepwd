@@ -12,7 +12,7 @@ export declare global {
 }
 
 export type CardProps = {
-  id: string;
+  id: string
   name: string;
   user: string;
   password: string;
@@ -21,11 +21,4 @@ export type CardProps = {
 type Props = {
   data: CardProps;
   onPress: () => void;
-}
-
-export type dataType = {
-  id: string | number[];
-  name: string;
-  user: string;
-  password: string;
 }

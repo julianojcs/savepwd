@@ -1,8 +1,9 @@
 {
   "expo": {
-    "name": "savepass",
-    "slug": "savepass",
+    "name": "savepwd",
+    "slug": "savepwd",
     "version": "1.0.0",
+    "description": "Store all your password here!",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -13,9 +14,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
