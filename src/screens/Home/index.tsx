@@ -52,10 +52,19 @@ export function Home() {
         position: 'top'
       })
     } else {
+      let decryptedData: CardProps[]
       const response = await getItem()
-      const previousData = response ? JSON.parse(response) : []
-      const data = previousData.filter((item: CardProps) => item.id !== id)
-      setItem(JSON.stringify(data))
+
+      if (response) {
+        const bytes = CryptoJS.AES.decrypt(response, cryptoKey)
+        decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
+      } else {
+        decryptedData = []
+      }
+      const data = decryptedData.filter((item: CardProps) => item.id !== id)
+      await setItem(
+        CryptoJS.AES.encrypt(JSON.stringify(data), cryptoKey).toString()
+      )
       setData(data)
     }
   }

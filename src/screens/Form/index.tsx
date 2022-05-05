@@ -54,11 +54,7 @@ export function Form() {
       }
       const data = [...decryptedData, newData]
       await setItem(
-        // Encrypt
-        CryptoJS.AES.encrypt(
-          JSON.stringify(data),
-          'process.env.REACT_APP_CRYPTO_KEY'
-        ).toString()
+        CryptoJS.AES.encrypt(JSON.stringify(data), cryptoKey).toString()
       )
       Toast.show({
         type: 'success',
